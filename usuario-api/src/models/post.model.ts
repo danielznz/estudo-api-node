@@ -1,4 +1,6 @@
-import {Entity, model, property} from '@loopback/repository';
+import {Entity, model, property, hasMany} from '@loopback/repository';
+import {Destaques} from './destaques.model';
+import {PostDestaque} from './post-destaque.model';
 
 @model()
 export class Post extends Entity {
@@ -36,6 +38,8 @@ export class Post extends Entity {
   })
   userId: number;
 
+  @hasMany(() => Destaques, {through: {model: () => PostDestaque}})
+  destaques: Destaques[];
 
   constructor(data?: Partial<Post>) {
     super(data);
