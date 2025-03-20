@@ -17,15 +17,10 @@ export class PostDestaque extends Entity {
 
   @property({
     type: 'number',
-    required: true,
+    required: true, 
   })
   destaqueId: number;
-
-  @property({
-    type: 'number',
-  })
-  destaquesId?: number;
-
+  
   constructor(data?: Partial<PostDestaque>) {
     super(data);
   }

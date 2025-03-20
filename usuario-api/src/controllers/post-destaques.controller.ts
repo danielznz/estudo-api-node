@@ -5,7 +5,7 @@ import {
   repository,
   Where,
 } from '@loopback/repository';
-  import {
+import {
   del,
   get,
   getModelSchemaRef,
@@ -16,16 +16,17 @@ import {
   requestBody,
 } from '@loopback/rest';
 import {
-Post,
-PostDestaque,
-Destaques,
+  Post,
+  PostDestaque,
+  Destaques,
 } from '../models';
-import {PostRepository} from '../repositories';
+import {PostRepository, PostDestaqueRepository} from '../repositories';
 
 export class PostDestaquesController {
   constructor(
     @repository(PostRepository) protected postRepository: PostRepository,
-  ) { }
+    @repository(PostDestaqueRepository) protected postDestaqueRepo: PostDestaqueRepository
+  ) {}
 
   @get('/posts/{id}/destaques', {
     responses: {
@@ -46,28 +47,22 @@ export class PostDestaquesController {
     return this.postRepository.destaques(id).find(filter);
   }
 
-  @post('/posts/{id}/destaques', {
+  @post('/posts/{postId}/destaques/{destaqueId}', {
     responses: {
       '200': {
-        description: 'create a Destaques model instance',
-        content: {'application/json': {schema: getModelSchemaRef(Destaques)}},
+        description: 'Vincula um Post a um Destaque existente',
+        content: {'application/json': {schema: getModelSchemaRef(PostDestaque)}},
       },
     },
   })
-  async create(
-    @param.path.number('id') id: typeof Post.prototype.id,
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(Destaques, {
-            title: 'NewDestaquesInPost',
-            exclude: ['id'],
-          }),
-        },
-      },
-    }) destaques: Omit<Destaques, 'id'>,
-  ): Promise<Destaques> {
-    return this.postRepository.destaques(id).create(destaques);
+  async linkPostToDestaque(
+    @param.path.number('postId') postId: number,
+    @param.path.number('destaqueId') destaqueId: number
+  ): Promise<PostDestaque> {
+    return this.postDestaqueRepo.create({
+      postId,
+      destaqueId
+    });
   }
 
   @patch('/posts/{id}/destaques', {

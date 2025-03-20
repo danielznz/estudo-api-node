@@ -38,7 +38,7 @@ export class Post extends Entity {
   })
   userId: number;
 
-  @hasMany(() => Destaques, {through: {model: () => PostDestaque}})
+  @hasMany(() => Destaques, {through: {model: () => PostDestaque, keyFrom: 'postId', keyTo: 'destaqueId'}})
   destaques: Destaques[];
 
   constructor(data?: Partial<Post>) {
