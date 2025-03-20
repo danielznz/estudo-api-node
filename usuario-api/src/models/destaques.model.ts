@@ -1,4 +1,6 @@
-import {Entity, model, property} from '@loopback/repository';
+import {Entity, model, property, hasMany} from '@loopback/repository';
+import {Post} from './post.model';
+import {PostDestaque} from './post-destaque.model';
 
 @model()
 export class Destaques extends Entity {
@@ -19,12 +21,9 @@ export class Destaques extends Entity {
   })
   imagemURL?: string;
 
-  @property({
-    type: 'number',
-    required: true,
-  })
-  postId: number;
-
+  // Adicionando a relação inversa
+  @hasMany(() => Post, {through: {model: () => PostDestaque}})
+  posts: Post[];
 
   constructor(data?: Partial<Destaques>) {
     super(data);
