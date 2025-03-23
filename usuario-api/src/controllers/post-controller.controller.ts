@@ -20,11 +20,60 @@ import {
 import {Post} from '../models';
 import {PostRepository} from '../repositories';
 
-export class PostControllerController {
+export class PostController {
   constructor(
     @repository(PostRepository)
-    public postRepository : PostRepository,
+    public postRepository: PostRepository,
   ) {}
+
+  // =================== 1. LEITURA (GET) ===================
+
+  @get('/posts')
+  @response(200, {
+    description: 'Array of Post model instances',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'array',
+          items: getModelSchemaRef(Post, {includeRelations: true}),
+        },
+      },
+    },
+  })
+  async find(
+    @param.filter(Post) filter?: Filter<Post>,
+  ): Promise<Post[]> {
+    return this.postRepository.find(filter);
+  }
+
+  @get('/posts/{id}')
+  @response(200, {
+    description: 'Post model instance',
+    content: {
+      'application/json': {
+        schema: getModelSchemaRef(Post, {includeRelations: true}),
+      },
+    },
+  })
+  async findById(
+    @param.path.number('id') id: number,
+    @param.filter(Post, {exclude: 'where'}) filter?: FilterExcludingWhere<Post>,
+  ): Promise<Post> {
+    return this.postRepository.findById(id, filter);
+  }
+
+  @get('/posts/count')
+  @response(200, {
+    description: 'Post model count',
+    content: {'application/json': {schema: CountSchema}},
+  })
+  async count(
+    @param.where(Post) where?: Where<Post>,
+  ): Promise<Count> {
+    return this.postRepository.count(where);
+  }
+
+  // =================== 2. CRIAÇÃO (POST) ===================
 
   @post('/posts')
   @response(200, {
@@ -47,34 +96,7 @@ export class PostControllerController {
     return this.postRepository.create(post);
   }
 
-  @get('/posts/count')
-  @response(200, {
-    description: 'Post model count',
-    content: {'application/json': {schema: CountSchema}},
-  })
-  async count(
-    @param.where(Post) where?: Where<Post>,
-  ): Promise<Count> {
-    return this.postRepository.count(where);
-  }
-
-  @get('/posts')
-  @response(200, {
-    description: 'Array of Post model instances',
-    content: {
-      'application/json': {
-        schema: {
-          type: 'array',
-          items: getModelSchemaRef(Post, {includeRelations: true}),
-        },
-      },
-    },
-  })
-  async find(
-    @param.filter(Post) filter?: Filter<Post>,
-  ): Promise<Post[]> {
-    return this.postRepository.find(filter);
-  }
+  // =================== 3. ATUALIZAÇÃO (PATCH / PUT) ===================
 
   @patch('/posts')
   @response(200, {
@@ -93,22 +115,6 @@ export class PostControllerController {
     @param.where(Post) where?: Where<Post>,
   ): Promise<Count> {
     return this.postRepository.updateAll(post, where);
-  }
-
-  @get('/posts/{id}')
-  @response(200, {
-    description: 'Post model instance',
-    content: {
-      'application/json': {
-        schema: getModelSchemaRef(Post, {includeRelations: true}),
-      },
-    },
-  })
-  async findById(
-    @param.path.number('id') id: number,
-    @param.filter(Post, {exclude: 'where'}) filter?: FilterExcludingWhere<Post>
-  ): Promise<Post> {
-    return this.postRepository.findById(id, filter);
   }
 
   @patch('/posts/{id}')
@@ -139,6 +145,8 @@ export class PostControllerController {
   ): Promise<void> {
     await this.postRepository.replaceById(id, post);
   }
+
+  // =================== 4. REMOÇÃO (DELETE) ===================
 
   @del('/posts/{id}')
   @response(204, {

@@ -14,7 +14,7 @@ export class Post extends Entity {
   @property({
     type: 'string',
   })
-  content?: string;
+  conteudo?: string;
 
   @property({
     type: 'string',

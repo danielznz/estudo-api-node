@@ -7,13 +7,13 @@ import {
   Where,
 } from '@loopback/repository';
 import {
-  post,
-  param,
+  del,
   get,
   getModelSchemaRef,
+  param,
   patch,
+  post,
   put,
-  del,
   requestBody,
   response,
 } from '@loopback/rest';
@@ -23,8 +23,57 @@ import {DestaquesRepository} from '../repositories';
 export class DestaquesController {
   constructor(
     @repository(DestaquesRepository)
-    public destaquesRepository : DestaquesRepository,
+    public destaquesRepository: DestaquesRepository,
   ) {}
+
+  // =================== 1. LEITURA (GET) ===================
+
+  @get('/destaques')
+  @response(200, {
+    description: 'Array of Destaques model instances',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'array',
+          items: getModelSchemaRef(Destaques, {includeRelations: true}),
+        },
+      },
+    },
+  })
+  async find(
+    @param.filter(Destaques) filter?: Filter<Destaques>,
+  ): Promise<Destaques[]> {
+    return this.destaquesRepository.find(filter);
+  }
+
+  @get('/destaques/{id}')
+  @response(200, {
+    description: 'Destaques model instance',
+    content: {
+      'application/json': {
+        schema: getModelSchemaRef(Destaques, {includeRelations: true}),
+      },
+    },
+  })
+  async findById(
+    @param.path.number('id') id: number,
+    @param.filter(Destaques, {exclude: 'where'}) filter?: FilterExcludingWhere<Destaques>,
+  ): Promise<Destaques> {
+    return this.destaquesRepository.findById(id, filter);
+  }
+
+  @get('/destaques/count')
+  @response(200, {
+    description: 'Destaques model count',
+    content: {'application/json': {schema: CountSchema}},
+  })
+  async count(
+    @param.where(Destaques) where?: Where<Destaques>,
+  ): Promise<Count> {
+    return this.destaquesRepository.count(where);
+  }
+
+  // =================== 2. CRIAÇÃO (POST) ===================
 
   @post('/destaques')
   @response(200, {
@@ -47,34 +96,7 @@ export class DestaquesController {
     return this.destaquesRepository.create(destaques);
   }
 
-  @get('/destaques/count')
-  @response(200, {
-    description: 'Destaques model count',
-    content: {'application/json': {schema: CountSchema}},
-  })
-  async count(
-    @param.where(Destaques) where?: Where<Destaques>,
-  ): Promise<Count> {
-    return this.destaquesRepository.count(where);
-  }
-
-  @get('/destaques')
-  @response(200, {
-    description: 'Array of Destaques model instances',
-    content: {
-      'application/json': {
-        schema: {
-          type: 'array',
-          items: getModelSchemaRef(Destaques, {includeRelations: true}),
-        },
-      },
-    },
-  })
-  async find(
-    @param.filter(Destaques) filter?: Filter<Destaques>,
-  ): Promise<Destaques[]> {
-    return this.destaquesRepository.find(filter);
-  }
+  // =================== 3. ATUALIZAÇÃO (PATCH / PUT) ===================
 
   @patch('/destaques')
   @response(200, {
@@ -93,22 +115,6 @@ export class DestaquesController {
     @param.where(Destaques) where?: Where<Destaques>,
   ): Promise<Count> {
     return this.destaquesRepository.updateAll(destaques, where);
-  }
-
-  @get('/destaques/{id}')
-  @response(200, {
-    description: 'Destaques model instance',
-    content: {
-      'application/json': {
-        schema: getModelSchemaRef(Destaques, {includeRelations: true}),
-      },
-    },
-  })
-  async findById(
-    @param.path.number('id') id: number,
-    @param.filter(Destaques, {exclude: 'where'}) filter?: FilterExcludingWhere<Destaques>
-  ): Promise<Destaques> {
-    return this.destaquesRepository.findById(id, filter);
   }
 
   @patch('/destaques/{id}')
@@ -139,6 +145,8 @@ export class DestaquesController {
   ): Promise<void> {
     await this.destaquesRepository.replaceById(id, destaques);
   }
+
+  // =================== 4. REMOÇÃO (DELETE) ===================
 
   @del('/destaques/{id}')
   @response(204, {

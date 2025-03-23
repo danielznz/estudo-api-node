@@ -7,24 +7,73 @@ import {
   Where,
 } from '@loopback/repository';
 import {
-  post,
-  param,
+  del,
   get,
   getModelSchemaRef,
+  param,
   patch,
+  post,
   put,
-  del,
   requestBody,
   response,
 } from '@loopback/rest';
 import {User} from '../models';
 import {UserRepository} from '../repositories';
 
-export class UserControllerController {
+export class UserController {
   constructor(
     @repository(UserRepository)
-    public userRepository : UserRepository,
+    public userRepository: UserRepository,
   ) {}
+
+  // =================== 1. LEITURA (GET) ===================
+
+  @get('/users')
+  @response(200, {
+    description: 'Array of User model instances',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'array',
+          items: getModelSchemaRef(User, {includeRelations: true}),
+        },
+      },
+    },
+  })
+  async find(
+    @param.filter(User) filter?: Filter<User>,
+  ): Promise<User[]> {
+    return this.userRepository.find(filter);
+  }
+
+  @get('/users/{id}')
+  @response(200, {
+    description: 'User model instance',
+    content: {
+      'application/json': {
+        schema: getModelSchemaRef(User, {includeRelations: true}),
+      },
+    },
+  })
+  async findById(
+    @param.path.number('id') id: number,
+    @param.filter(User, {exclude: 'where'}) filter?: FilterExcludingWhere<User>,
+  ): Promise<User> {
+    return this.userRepository.findById(id, filter);
+  }
+
+  @get('/users/count')
+  @response(200, {
+    description: 'User model count',
+    content: {'application/json': {schema: CountSchema}},
+  })
+  async count(
+    @param.where(User) where?: Where<User>,
+  ): Promise<Count> {
+    return this.userRepository.count(where);
+  }
+
+  // =================== 2. CRIAÇÃO (POST) ===================
 
   @post('/users')
   @response(200, {
@@ -47,34 +96,7 @@ export class UserControllerController {
     return this.userRepository.create(user);
   }
 
-  @get('/users/count')
-  @response(200, {
-    description: 'User model count',
-    content: {'application/json': {schema: CountSchema}},
-  })
-  async count(
-    @param.where(User) where?: Where<User>,
-  ): Promise<Count> {
-    return this.userRepository.count(where);
-  }
-
-  @get('/users')
-  @response(200, {
-    description: 'Array of User model instances',
-    content: {
-      'application/json': {
-        schema: {
-          type: 'array',
-          items: getModelSchemaRef(User, {includeRelations: true}),
-        },
-      },
-    },
-  })
-  async find(
-    @param.filter(User) filter?: Filter<User>,
-  ): Promise<User[]> {
-    return this.userRepository.find(filter);
-  }
+  // =================== 3. ATUALIZAÇÃO (PATCH / PUT) ===================
 
   @patch('/users')
   @response(200, {
@@ -93,22 +115,6 @@ export class UserControllerController {
     @param.where(User) where?: Where<User>,
   ): Promise<Count> {
     return this.userRepository.updateAll(user, where);
-  }
-
-  @get('/users/{id}')
-  @response(200, {
-    description: 'User model instance',
-    content: {
-      'application/json': {
-        schema: getModelSchemaRef(User, {includeRelations: true}),
-      },
-    },
-  })
-  async findById(
-    @param.path.number('id') id: number,
-    @param.filter(User, {exclude: 'where'}) filter?: FilterExcludingWhere<User>
-  ): Promise<User> {
-    return this.userRepository.findById(id, filter);
   }
 
   @patch('/users/{id}')
@@ -139,6 +145,8 @@ export class UserControllerController {
   ): Promise<void> {
     await this.userRepository.replaceById(id, user);
   }
+
+  // =================== 4. REMOÇÃO (DELETE) ===================
 
   @del('/users/{id}')
   @response(204, {

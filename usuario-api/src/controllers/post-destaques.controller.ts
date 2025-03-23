@@ -27,11 +27,42 @@ export class PostDestaquesController {
     @repository(PostRepository) protected postRepository: PostRepository,
     @repository(PostDestaqueRepository) protected postDestaqueRepo: PostDestaqueRepository
   ) {}
-
-  @get('/posts/{id}/destaques', {
+  
+  @get('/destaques/{destaqueId}/posts', {
     responses: {
       '200': {
-        description: 'Array of Post has many Destaques through PostDestaque',
+        description: 'Array of Posts related to a specific Destaque',
+        content: {
+          'application/json': {
+            schema: {type: 'array', items: getModelSchemaRef(Post)},
+          },
+        },
+      },
+    },
+  })
+  async findPostsByDestaqueId(
+    @param.path.number('destaqueId') destaqueId: number,
+    @param.query.object('filter') filter?: Filter<Post>,
+  ): Promise<Post[]> {
+    return this.postRepository.find({
+      where: {
+        id: {
+          inq: (
+            await this.postDestaqueRepo.find({ 
+              where: { destaqueId },
+              fields: { postId: true }
+            })
+          ).map(rel => rel.postId),
+        },
+      },
+      ...filter,
+    });
+  }
+
+  @get('/posts/{postId}/destaques', {
+    responses: {
+      '200': {
+        description: 'Array of Destaques related to a specific Post',
         content: {
           'application/json': {
             schema: {type: 'array', items: getModelSchemaRef(Destaques)},
@@ -40,11 +71,46 @@ export class PostDestaquesController {
       },
     },
   })
-  async find(
-    @param.path.number('id') id: number,
+  async findDestaquesByPostId(
+    @param.path.number('postId') postId: number,
     @param.query.object('filter') filter?: Filter<Destaques>,
-  ): Promise<Destaques[]> {
-    return this.postRepository.destaques(id).find(filter);
+  ): Promise<Destaques[] | {message: string}> {
+    const destaqueIds = (
+      await this.postDestaqueRepo.find({
+        where: {postId},
+        fields: {destaqueId: true},
+      })
+    ).map(rel => rel.destaqueId);
+  
+    if (destaqueIds.length === 0) {
+      return {message: "Essa publicação não está em nenhum destaque."};
+    }
+  
+    return this.postRepository.destaques(postId).find(filter);
+  }
+  
+  @get('/posts/destaque-status', {
+    responses: {
+      '200': {
+        description: 'Lista de posts com status de destaque (destacado ou não destacado)',
+        content: {'application/json': {schema: {type: 'array', items: getModelSchemaRef(Post)}}},
+      },
+    },
+  })
+  async findPostsByDestaqueStatus(
+    @param.query.boolean('isDestacado') isDestacado: boolean
+  ): Promise<Post[]> {
+    const postIdsComDestaque = (
+      await this.postDestaqueRepo.find({
+        fields: { postId: true },
+      })
+    ).map(rel => rel.postId);
+  
+    const whereCondition = isDestacado
+      ? { id: { inq: postIdsComDestaque } }
+      : { id: { nin: postIdsComDestaque } };
+  
+    return this.postRepository.find({ where: whereCondition });
   }
 
   @post('/posts/{postId}/destaques/{destaqueId}', {
@@ -64,42 +130,5 @@ export class PostDestaquesController {
       destaqueId
     });
   }
-
-  @patch('/posts/{id}/destaques', {
-    responses: {
-      '200': {
-        description: 'Post.Destaques PATCH success count',
-        content: {'application/json': {schema: CountSchema}},
-      },
-    },
-  })
-  async patch(
-    @param.path.number('id') id: number,
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(Destaques, {partial: true}),
-        },
-      },
-    })
-    destaques: Partial<Destaques>,
-    @param.query.object('where', getWhereSchemaFor(Destaques)) where?: Where<Destaques>,
-  ): Promise<Count> {
-    return this.postRepository.destaques(id).patch(destaques, where);
-  }
-
-  @del('/posts/{id}/destaques', {
-    responses: {
-      '200': {
-        description: 'Post.Destaques DELETE success count',
-        content: {'application/json': {schema: CountSchema}},
-      },
-    },
-  })
-  async delete(
-    @param.path.number('id') id: number,
-    @param.query.object('where', getWhereSchemaFor(Destaques)) where?: Where<Destaques>,
-  ): Promise<Count> {
-    return this.postRepository.destaques(id).delete(where);
-  }
 }
+

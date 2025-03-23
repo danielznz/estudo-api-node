@@ -15,16 +15,16 @@ import {
   post,
   requestBody,
 } from '@loopback/rest';
-import {
-  User,
-  Post,
-} from '../models';
+import {User, Post} from '../models';
 import {UserRepository} from '../repositories';
 
 export class UserPostController {
   constructor(
-    @repository(UserRepository) protected userRepository: UserRepository,
-  ) { }
+    @repository(UserRepository)
+    protected userRepository: UserRepository,
+  ) {}
+
+  // =================== 1. LEITURA (GET) ===================
 
   @get('/users/{id}/posts', {
     responses: {
@@ -45,6 +45,8 @@ export class UserPostController {
     return this.userRepository.posts(id).find(filter);
   }
 
+  // =================== 2. CRIAÇÃO (POST) ===================
+
   @post('/users/{id}/posts', {
     responses: {
       '200': {
@@ -61,14 +63,17 @@ export class UserPostController {
           schema: getModelSchemaRef(Post, {
             title: 'NewPostInUser',
             exclude: ['id'],
-            optional: ['userId']
+            optional: ['userId'],
           }),
         },
       },
-    }) post: Omit<Post, 'id'>,
+    }) 
+    post: Omit<Post, 'id'>,
   ): Promise<Post> {
     return this.userRepository.posts(id).create(post);
   }
+
+  // =================== 3. ATUALIZAÇÃO (PATCH) ===================
 
   @patch('/users/{id}/posts', {
     responses: {
@@ -92,6 +97,8 @@ export class UserPostController {
   ): Promise<Count> {
     return this.userRepository.posts(id).patch(post, where);
   }
+
+  // =================== 4. REMOÇÃO (DELETE) ===================
 
   @del('/users/{id}/posts', {
     responses: {

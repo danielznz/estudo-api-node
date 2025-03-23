@@ -27,12 +27,12 @@ export class Profile extends Entity {
   @property({
     type: 'string',
   })
-  photo?: string;
+  foto?: string;
 
   @property({
     type: 'string',
   })
-  location?: string;
+  localizacao?: string;
 
   @property({
     type: 'string',

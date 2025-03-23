@@ -15,7 +15,14 @@ export class User extends Entity {
     type: 'string',
     required: true,
   })
-  name: string;
+  nome: string;
+
+
+  @property({
+    type: 'string',
+    required: true,
+  })
+  sobrenome: string;
 
   @property({
     type: 'string',
@@ -27,7 +34,7 @@ export class User extends Entity {
     type: 'string',
     required: true,
   })
-  password: string;
+  senha: string;
 
   @property({
     type: 'date',

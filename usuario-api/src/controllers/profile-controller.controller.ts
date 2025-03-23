@@ -20,11 +20,60 @@ import {
 import {Profile} from '../models';
 import {ProfileRepository} from '../repositories';
 
-export class ProfileControllerController {
+export class ProfileController {
   constructor(
     @repository(ProfileRepository)
     public profileRepository: ProfileRepository,
-  ) { }
+  ) {}
+
+  // =================== 1. LEITURA (GET) ===================
+
+  @get('/profiles')
+  @response(200, {
+    description: 'Array of Profile model instances',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'array',
+          items: getModelSchemaRef(Profile, {includeRelations: true}),
+        },
+      },
+    },
+  })
+  async find(
+    @param.filter(Profile) filter?: Filter<Profile>,
+  ): Promise<Profile[]> {
+    return this.profileRepository.find(filter);
+  }
+
+  @get('/profiles/{id}')
+  @response(200, {
+    description: 'Profile model instance',
+    content: {
+      'application/json': {
+        schema: getModelSchemaRef(Profile, {includeRelations: true}),
+      },
+    },
+  })
+  async findById(
+    @param.path.number('id') id: number,
+    @param.filter(Profile, {exclude: 'where'}) filter?: FilterExcludingWhere<Profile>,
+  ): Promise<Profile> {
+    return this.profileRepository.findById(id, filter);
+  }
+
+  @get('/profiles/count')
+  @response(200, {
+    description: 'Profile model count',
+    content: {'application/json': {schema: CountSchema}},
+  })
+  async count(
+    @param.where(Profile) where?: Where<Profile>,
+  ): Promise<Count> {
+    return this.profileRepository.count(where);
+  }
+
+  // =================== 2. CRIAÇÃO (POST) ===================
 
   @post('/profiles')
   @response(200, {
@@ -47,34 +96,7 @@ export class ProfileControllerController {
     return this.profileRepository.create(profile);
   }
 
-  @get('/profiles/count')
-  @response(200, {
-    description: 'Profile model count',
-    content: {'application/json': {schema: CountSchema}},
-  })
-  async count(
-    @param.where(Profile) where?: Where<Profile>,
-  ): Promise<Count> {
-    return this.profileRepository.count(where);
-  }
-
-  @get('/profiles')
-  @response(200, {
-    description: 'Array of Profile model instances',
-    content: {
-      'application/json': {
-        schema: {
-          type: 'array',
-          items: getModelSchemaRef(Profile, {includeRelations: true}),
-        },
-      },
-    },
-  })
-  async find(
-    @param.filter(Profile) filter?: Filter<Profile>,
-  ): Promise<Profile[]> {
-    return this.profileRepository.find(filter);
-  }
+  // =================== 3. ATUALIZAÇÃO (PATCH / PUT) ===================
 
   @patch('/profiles')
   @response(200, {
@@ -93,22 +115,6 @@ export class ProfileControllerController {
     @param.where(Profile) where?: Where<Profile>,
   ): Promise<Count> {
     return this.profileRepository.updateAll(profile, where);
-  }
-
-  @get('/profiles/{id}')
-  @response(200, {
-    description: 'Profile model instance',
-    content: {
-      'application/json': {
-        schema: getModelSchemaRef(Profile, {includeRelations: true}),
-      },
-    },
-  })
-  async findById(
-    @param.path.number('id') id: number,
-    @param.filter(Profile, {exclude: 'where'}) filter?: FilterExcludingWhere<Profile>
-  ): Promise<Profile> {
-    return this.profileRepository.findById(id, filter);
   }
 
   @patch('/profiles/{id}')
@@ -140,6 +146,8 @@ export class ProfileControllerController {
     await this.profileRepository.replaceById(id, profile);
   }
 
+  // =================== 4. REMOÇÃO (DELETE) ===================
+
   @del('/profiles/{id}')
   @response(204, {
     description: 'Profile DELETE success',
@@ -148,4 +156,3 @@ export class ProfileControllerController {
     await this.profileRepository.deleteById(id);
   }
 }
-

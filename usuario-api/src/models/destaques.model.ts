@@ -19,7 +19,22 @@ export class Destaques extends Entity {
   @property({
     type: 'string',
   })
+  descricao?: string;
+
+  @property({
+    type: 'string',
+  })
+  localizacao?: string;
+
+  @property({
+    type: 'string',
+  })
   imagemURL?: string;
+
+  @property({
+    type: 'date',
+  })
+  data?: string;
 
   // Adicionando a relação inversa
   @hasMany(() => Post, {through: {model: () => PostDestaque}})
