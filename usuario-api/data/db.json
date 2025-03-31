@@ -1,10 +1,53 @@
 {
   "ids": {
-    "User": 2
+    "User": 6,
+    "Profile": 6,
+    "Post": 6,
+    "Destaques": 7,
+    "PostDestaque": 12
   },
   "models": {
     "User": {
-      "1": "{\"nome\":\"José\",\"sobrenome\":\"Silva\",\"email\":\"jose@gmail.com\",\"senha\":\"senha123\",\"createdAt\":\"2025-03-31T17:55:11.869Z\",\"id\":1}"
+      "1": "{\"nome\":\"José\",\"sobrenome\":\"Silva\",\"email\":\"jose@gmail.com\",\"senha\":\"senha123\",\"createdAt\":\"2025-03-31T17:55:11.869Z\",\"id\":1}",
+      "2": "{\"id\":2,\"nome\":\"Denis\",\"sobrenome\":\"Cardoso\",\"email\":\"denis@outlook.com\",\"senha\":\"denis123\",\"createdAt\":\"2025-03-31T18:53:43.933Z\"}",
+      "3": "{\"nome\":\"Raphael\",\"sobrenome\":\"Veiga\",\"email\":\"veiga@outlook.com\",\"senha\":\"veiga2021\",\"createdAt\":\"2025-03-31T18:52:58.145Z\",\"id\":3}",
+      "4": "{\"nome\":\"Gustavo\",\"sobrenome\":\"Gomez\",\"email\":\"ggomez@yahoo.com\",\"senha\":\"gustavogomez123\",\"createdAt\":\"2025-03-31T18:52:58.145Z\",\"id\":4}",
+      "5": "{\"nome\":\"Abel\",\"sobrenome\":\"Ferreira\",\"email\":\"abel@gmail.com\",\"senha\":\"palmeiras\",\"createdAt\":\"2025-03-31T18:52:58.145Z\",\"id\":5}"
+    },
+    "Profile": {
+      "1": "{\"bio\":\"Professor Universitário\",\"foto\":\"fotourl\",\"localizacao\":\"Brasil\",\"link\":\"meusitepessoal.com\",\"userId\":1,\"id\":1}",
+      "2": "{\"bio\":\"Engenheiro Mecânico\",\"foto\":\"fotourl\",\"localizacao\":\"São Paulo\",\"link\":\"dmpessoal.com\",\"userId\":2,\"id\":2}",
+      "3": "{\"bio\":\"Digital Influencer\",\"foto\":\"fotourl\",\"localizacao\":\"Espanha\",\"link\":\"blographael\",\"userId\":3,\"id\":3}",
+      "4": "{\"bio\":\"Jogador de Futebol\",\"foto\":\"fotourl\",\"localizacao\":\"Paraguai\",\"link\":\"paraguaifutebol.com\",\"userId\":4,\"id\":4}",
+      "5": "{\"bio\":\"Treinador de Futebol\",\"foto\":\"fotourl\",\"localizacao\":\"Portugal\",\"link\":\"abel.ferreira.goat.com\",\"userId\":5,\"id\":5}"
+    },
+    "Post": {
+      "1": "{\"conteudo\":\"Meu ano de 2024\",\"imageUrl\":\"2024.url\",\"likes\":14,\"createdAt\":\"2025-03-31T19:01:51.563Z\",\"userId\":1,\"id\":1}",
+      "2": "{\"conteudo\":\"Meu ano de 2023\",\"imageUrl\":\"2023.url\",\"likes\":13,\"createdAt\":\"2025-03-31T19:01:51.563Z\",\"userId\":1,\"id\":2}",
+      "3": "{\"conteudo\":\"Meu ano de 2022\",\"imageUrl\":\"2022.url\",\"likes\":12,\"createdAt\":\"2025-03-31T19:01:51.563Z\",\"userId\":1,\"id\":3}",
+      "4": "{\"conteudo\":\"Meu ano de 2021\",\"imageUrl\":\"2021.url\",\"likes\":11,\"createdAt\":\"2025-03-31T19:01:51.563Z\",\"userId\":1,\"id\":4}",
+      "5": "{\"conteudo\":\"Meu ano de 2020\",\"imageUrl\":\"2020.url\",\"likes\":10,\"createdAt\":\"2025-03-31T19:01:51.563Z\",\"userId\":1,\"id\":5}"
+    },
+    "Destaques": {
+      "1": "{\"nome\":\"Viagens\",\"descricao\":\"minhas viagens nos ultimos anos...\",\"localizacao\":\"Dinamarca\",\"imagemURL\":\"dinamarca.png\",\"data\":\"2025-03-31T19:03:52.314Z\",\"id\":1}",
+      "2": "{\"nome\":\"Retrospectiva 2024\",\"descricao\":\"Meu ano de 2024...\",\"localizacao\":\"Portugal\",\"imagemURL\":\"2024.png\",\"data\":\"2025-03-31T19:03:52.314Z\",\"id\":2}",
+      "3": "{\"nome\":\"Retrospectiva 2023\",\"descricao\":\"Meu ano de 2023...\",\"localizacao\":\"Brasil\",\"imagemURL\":\"2023.png\",\"data\":\"2025-03-31T19:03:52.314Z\",\"id\":3}",
+      "4": "{\"nome\":\"Retrospectiva 2022\",\"descricao\":\"Meu ano de 2022...\",\"localizacao\":\"Brasil\",\"imagemURL\":\"2022.png\",\"data\":\"2025-03-31T19:03:52.314Z\",\"id\":4}",
+      "5": "{\"nome\":\"Retrospectiva 2021\",\"descricao\":\"Meu ano de 2021...\",\"localizacao\":\"Argentina\",\"imagemURL\":\"2021.png\",\"data\":\"2025-03-31T19:03:52.314Z\",\"id\":5}",
+      "6": "{\"nome\":\"Retrospectiva 2020\",\"descricao\":\"Meu ano de 2020...\",\"localizacao\":\"Canada\",\"imagemURL\":\"2020.png\",\"data\":\"2025-03-31T19:03:52.314Z\",\"id\":6}"
+    },
+    "PostDestaque": {
+      "1": "{\"postId\":1,\"destaqueId\":2,\"id\":1}",
+      "2": "{\"postId\":1,\"destaqueId\":1,\"id\":2}",
+      "3": "{\"postId\":1,\"destaqueId\":1,\"id\":3}",
+      "4": "{\"postId\":2,\"destaqueId\":1,\"id\":4}",
+      "5": "{\"postId\":3,\"destaqueId\":1,\"id\":5}",
+      "6": "{\"postId\":4,\"destaqueId\":1,\"id\":6}",
+      "7": "{\"postId\":5,\"destaqueId\":1,\"id\":7}",
+      "8": "{\"postId\":3,\"destaqueId\":4,\"id\":8}",
+      "9": "{\"postId\":4,\"destaqueId\":5,\"id\":9}",
+      "10": "{\"postId\":5,\"destaqueId\":6,\"id\":10}",
+      "11": "{\"postId\":2,\"destaqueId\":3,\"id\":11}"
     }
   }
 }
